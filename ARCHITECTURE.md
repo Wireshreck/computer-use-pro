@@ -77,3 +77,25 @@ Rationale:
   skill fails fast with the cause and offers the launcher instead.
 - Clipboard reading — no native tool; OS clipboard is probe-strings-only by
   policy, with `BLOCKED` as the default report.
+
+## Addendum: genuine input backend
+
+`scripts/send-input.ps1` (see `INPUT-BACKEND.md`) was added after source
+inspection of the native `runtime.ps1` proved every mouse/keyboard path is a
+fire-and-forget `PostMessage` with discarded returns. It uses real
+`SendInput` for movement, drags (guaranteed release), clicks, chords, and
+Unicode typing, plus the `move_cursor_smoothly` engine
+(line/quadratic/cubic; `linear`/`ease_in_out`/`ease_out`). Supervised
+desktop tests have since verified movement endpoints, sampled smoothness,
+Paint drags, and release guarantees; keyboard text entry against a focused
+control remains unproven (see test reports under `test-results/`).
+
+## Addendum: evidence management
+
+`scripts/capture-evidence.ps1` reuses the native screenshot source
+(`ocu js` `getScreenshot`, the same bytes `get_app_state` returns) and
+adds retention semantics the native layer lacks: `keep` / `temporary` /
+`auto` / `discard` modes, SHA-256 duplicate detection, an append-safe
+`artifacts/index.json`, and a deletion guard that only permits removing
+files under owned temporary zones. `artifacts/` and `test-results/` are
+local-only Git-ignored state; nothing retained there is committed.

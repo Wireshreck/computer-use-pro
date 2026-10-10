@@ -48,6 +48,32 @@ one-offs, and `ocu js` (`cua.getApp(...)` + `app.*`) for scripted sequences.
 `ocu call --calls '[...]'` keeps element-index state in one process, which
 single `call`s cannot (`No app state is available … Run get_app_state first`).
 
+## Screenshots and evidence
+
+Screenshots come from the native `get_app_state` image by way of
+`scripts/capture-evidence.ps1` — never synthesized, always decoded and
+verified before anything claims they were saved:
+
+```powershell
+.\scripts\capture-evidence.ps1 -Action capture -ParamsJson '{"app":"mspaint","mode":"keep","purpose":"pre-drag baseline","why":"before-state for significant canvas action"}'
+```
+
+Retention modes: `keep` (verified + indexed under `artifacts/`),
+`temporary` (owned temp dir only), `auto` (capture now, `decide`
+usefulness later, duplicates discarded by hash), `discard` (proof of
+capture, file removed immediately). `discard`/`decide` delete **only**
+files under owned temporary zones (`%TEMP%\cup-*`, `test-results/`);
+retained artifacts and user files are refused, never force-deleted.
+
+Every retained image gets a metadata entry in `artifacts/index.json`
+(id, relative path, timestamp, app, purpose, reason, dimensions, hash).
+Retrieve one with `-Action list` / `-Action verify '{"id":"…"}'`.
+Integrate with observe → act → verify: capture before/after significant
+actions, keep pairs that prove an outcome, discard redundant polls.
+What it cannot do: capture windows with no capturable surface (minimized,
+cloaked, secure desktop), or photograph anything the native layer cannot
+see — a capture with no bytes is an explicit error.
+
 ## The interaction cycle (mandatory)
 
 Every significant interaction follows observe → target → act → verify:
@@ -101,6 +127,15 @@ Every significant interaction follows observe → target → act → verify:
   unchanged value as a no-effect drag, not as success.
 - After any drag, verify by outcome, because a no-effect drag still reports
   success.
+- **Genuine input backend:** when the native posted-message path is
+  insufficient (canvas tools, real drag sessions, visible cursor work), use
+  `scripts/send-input.ps1` — real `SendInput` delivery with verified focus
+  and guaranteed button release. See `INPUT-BACKEND.md`. Movement-only
+  helper: `-Action move` (`move_cursor_smoothly`: line/quadratic/cubic,
+  `linear`/`ease_in_out`/`ease_out`); smooth drag reuses the same engine
+  with the button held (`-Action drag`); genuine wheel scrolling
+  (`-Action scroll`: `up`/`down`/`left`/`right` at the real cursor
+  position, verified by viewport change).
 
 ## Keyboard
 
@@ -112,6 +147,10 @@ Every significant interaction follows observe → target → act → verify:
   editing, or chord effect was observed in 1.0.0: always verify the
   postcondition (e.g. type `AB`, press `Left`, type `X` — `ABX` means the
   caret never moved). Never chain logic on an unverified key effect.
+  For genuine key delivery (down/up through the input system, modifiers
+  held and always released), use `scripts/send-input.ps1 -Action key`
+  (and `-Action type` for layout-independent Unicode); see
+  `INPUT-BACKEND.md`.
 - Verified key names live in `lib/keys.mjs` (`ACCEPTED` = runtime takes the
   key without error, **not** proof it acted). Unlisted names are
   `unverified`: probe them in a disposable window first. The Windows key

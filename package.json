@@ -6,6 +6,9 @@
   "scripts": {
     "test": "node --test \"tests/unit/keymap.test.mjs\" \"tests/unit/cycle.test.mjs\" \"tests/unit/safety.test.mjs\"",
     "test:unit": "node --test \"tests/unit/keymap.test.mjs\" \"tests/unit/cycle.test.mjs\" \"tests/unit/safety.test.mjs\"",
-    "test:integration": "node --test --test-timeout=600000 \"tests/integration/smoke.test.mjs\""
+    "test:integration": "node --test --test-timeout=600000 \"tests/integration/smoke.test.mjs\" \"tests/integration/evidence.test.mjs\" \"tests/integration/motion.test.mjs\"",
+    "test:smoke": "node --test --test-timeout=600000 \"tests/integration/smoke.test.mjs\"",
+    "test:evidence": "node --test --test-timeout=600000 \"tests/integration/evidence.test.mjs\"",
+    "test:motion": "node --test --test-timeout=600000 \"tests/integration/motion.test.mjs\""
   }
 }

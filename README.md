@@ -17,11 +17,16 @@ Windows GUI task and let OpenCode match it by description.
 
 ```text
 SKILL.md                    skill definition + operating rules
+INPUT-BACKEND.md            genuine SendInput backend + move_cursor_smoothly reference
+artifacts/                  LOCAL ONLY (git-ignored): retained screenshots + index.json
+test-results/               LOCAL ONLY (git-ignored): run reports, logs, temp captures
 lib/keys.mjs                probed Windows key-support table
 lib/cycle.mjs               observe → act → verify with bounded retries
 lib/safety.mjs              action classification, secret redaction, clipboard guard
 scripts/launch-notepad.ps1  approved disposable-window launcher (TEMP-confined)
 scripts/focus-window.ps1    foreground helper for automation-owned windows
+scripts/send-input.ps1      genuine SendInput backend: move/drag/click/key/type
+scripts/capture-evidence.ps1 screenshot capture + smart retention (keep/temporary/auto/discard)
 tests/unit/                 mocked unit tests (node:test, no desktop)
 tests/integration/          real desktop test, gated by CUP_REAL=1
 ```
@@ -39,6 +44,11 @@ tests/integration/          real desktop test, gated by CUP_REAL=1
 npm test                     # mocked unit tests, no desktop touched
 $env:CUP_REAL=1; npm run test:integration   # real disposable-Notepad test
 ```
+
+Test reports land in `test-results/run-YYYYMMDD-HHMMSS/` (`summary.md`,
+`results.json`, `logs/`, run-local `screenshots/` + `evidence/`,
+`environment.txt`). Retained run evidence is also indexed in
+`artifacts/index.json`. Both directories are Git-ignored local state.
 
 The integration test aborts if any visible Notepad window it did not create
 exists, closes only its own pid, deletes its temp file, and reports native

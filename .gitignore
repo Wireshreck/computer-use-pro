@@ -12,6 +12,10 @@ cup-probe/
 *-probe-*.txt
 cup-case-*.txt
 
+# Local evidence and test working directories (never committed).
+artifacts/
+test-results/
+
 # Node.js
 node_modules/
 coverage/
