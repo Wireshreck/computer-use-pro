@@ -1,0 +1,27 @@
+# Secrets and local junk stay out of the repo.
+.env
+.env.*
+*.log
+*.out
+
+# Private or generated artifacts: screenshots, recordings, probe data.
+screenshots/
+recordings/
+tmp/
+cup-probe/
+*-probe-*.txt
+cup-case-*.txt
+
+# Node.js
+node_modules/
+coverage/
+.npm/
+
+# Windows / editors
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.vscode/
+.idea/
+*.swp
+*~

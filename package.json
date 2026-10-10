@@ -1,0 +1,11 @@
+{
+  "name": "computer-use-pro",
+  "version": "1.0.0",
+  "description": "Windows desktop computer-use skill: screen observation, window management, mouse, keyboard, UI Automation, and safe recovery via the native 9-tool surface.",
+  "type": "module",
+  "scripts": {
+    "test": "node --test \"tests/unit/keymap.test.mjs\" \"tests/unit/cycle.test.mjs\" \"tests/unit/safety.test.mjs\"",
+    "test:unit": "node --test \"tests/unit/keymap.test.mjs\" \"tests/unit/cycle.test.mjs\" \"tests/unit/safety.test.mjs\"",
+    "test:integration": "node --test --test-timeout=600000 \"tests/integration/smoke.test.mjs\""
+  }
+}
